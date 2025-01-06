@@ -3,9 +3,6 @@ from setuptools import find_packages, setup
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
-
 setup(
     name="xrss",
     version="0.1.0",
@@ -29,12 +26,7 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Content Management System",
     ],
     python_requires=">=3.9",
-    install_requires=requirements,
-    # entry_points={
-    #     "console_scripts": [
-    #         "xrss=xrss.main:main",
-    #     ],
-    # },
+    # Dependencies are now managed in pyproject.toml
     include_package_data=True,
     zip_safe=False,
 )
