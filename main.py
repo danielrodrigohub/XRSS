@@ -179,7 +179,7 @@ async def get_tweets(
             # Do not add if already in the dict
             tweets[username] = [{
                 "created_at": tweet.created_at,
-                "type": _get_tweet_type(tweet, user.id),
+                "type": _get_tweet_type(tweet),
                 "id": tweet.id,
                 "full_text": clean_tweet(tweet.full_text),
                 "in_reply_to": [{
@@ -191,10 +191,10 @@ async def get_tweets(
                     } for _reply in tweet.replies
                 ] if tweet.replies is not None else [], # [some tweet, answer from the target user]
                 } for tweet in user_tweets
-                if (include_posts and _get_tweet_type(tweet, user.id) == "Post")
-                or (include_replies and _get_tweet_type(tweet, user.id) == "Reply")
-                or (include_retweets and _get_tweet_type(tweet, user.id) == "Retweet")
-                or (include_quotes and _get_tweet_type(tweet, user.id) == "Quote")
+                if (include_posts and _get_tweet_type(tweet) == "Post")
+                or (include_replies and _get_tweet_type(tweet) == "Reply")
+                or (include_retweets and _get_tweet_type(tweet) == "Retweet")
+                or (include_quotes and _get_tweet_type(tweet) == "Quote")
             ]
 
     # Remove duplicates
