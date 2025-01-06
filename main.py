@@ -2,14 +2,13 @@ import os
 import sys
 import json
 import asyncio
-import datetime
 import uvicorn
 
 from typing import List, Dict, Any
 from logging import getLogger
 from dotenv import load_dotenv
 from zoneinfo import ZoneInfo
-from datetime import timedelta, datetime
+from datetime import datetime
 from twikit import Tweet as TwikitTweet, Client as TwikitClient
 from fastapi import FastAPI, Response, Query, BackgroundTasks
 from feedgen.feed import FeedGenerator
@@ -144,8 +143,12 @@ async def refresh_user_tweets_cache(username: str) -> None:
 
         # Combine and process tweets
         all_tweets = []
+        seen_tweet_ids = set()
         for tweet_list in results:
-            all_tweets.extend(list(tweet_list))
+            for tweet in tweet_list:
+                if tweet.id not in seen_tweet_ids:
+                    all_tweets.append(tweet)
+                    seen_tweet_ids.add(tweet.id)
 
         # Sort and process tweets
         all_tweets.sort(key=lambda x: datetime.strptime(x.created_at, "%a %b %d %H:%M:%S +0000 %Y"), reverse=True)
