@@ -7,4 +7,4 @@ with support for multiple accounts, custom filtering, and efficient caching.
 
 __version__ = "0.1.0"
 __author__ = "thytu"
-__license__ = "MIT" 
+__license__ = "MIT"

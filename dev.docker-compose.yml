@@ -30,4 +30,4 @@ services:
       retries: 3
 
 volumes:
-  redis_data: 
+  redis_data:

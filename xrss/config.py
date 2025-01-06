@@ -1,8 +1,9 @@
 """Configuration module for XRSS."""
 
 import os
-from typing import Optional
+
 from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     """Application settings."""
@@ -15,7 +16,9 @@ class Settings(BaseSettings):
     # Redis configuration
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379")
     cache_ttl: int = int(os.getenv("CACHE_TTL", 1800))  # 30 minutes
-    background_refresh_interval: int = int(os.getenv("BACKGROUND_REFRESH_INTERVAL", 1500))  # 25 minutes
+    background_refresh_interval: int = int(
+        os.getenv("BACKGROUND_REFRESH_INTERVAL", 1500)
+    )  # 25 minutes
 
     # Rate limiting
     max_concurrent_requests: int = int(os.getenv("MAX_CONCURRENT_REQUESTS", 2))
@@ -28,4 +31,6 @@ class Settings(BaseSettings):
 
     # Logging
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
-    log_format: str = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    log_format: str = os.getenv(
+        "LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )

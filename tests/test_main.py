@@ -1,16 +1,23 @@
+# flake8: noqa
 import json
-import pytest
-
 from unittest.mock import AsyncMock, MagicMock, patch
-from fastapi.testclient import TestClient
-from xrss.main import app, clean_tweet, get_cached_tweets, get_cached_user, refresh_user_tweets_cache
 
+import pytest
+from fastapi.testclient import TestClient
+
+from xrss.main import (
+    app,
+    clean_tweet,
+    get_cached_tweets,
+    get_cached_user,
+    refresh_user_tweets_cache,
+)
 
 client = TestClient(app)
 
 
 @pytest.fixture
-def mock_redis():
+def mock_redis():  # type: ignore
     with patch("xrss.main.redis") as mock:
         mock.get = AsyncMock()
         mock.setex = AsyncMock()
@@ -18,13 +25,13 @@ def mock_redis():
 
 
 @pytest.fixture
-def mock_twikit_client():
+def mock_twikit_client():  # type: ignore
     with patch("xrss.main.twikit_client") as mock:
         mock.get_user_by_screen_name = AsyncMock()
         yield mock
 
 
-def test_clean_tweet():
+def test_clean_tweet() -> None:
     """Test the clean_tweet function with various inputs."""
     # Test regular tweet
     assert clean_tweet("Hello world!") == "Hello world!"
@@ -37,13 +44,13 @@ def test_clean_tweet():
 
 
 @pytest.mark.asyncio
-async def test_get_cached_user(mock_redis):
+async def test_get_cached_user(mock_redis: AsyncMock) -> None:
     """Test get_cached_user function."""
     username = "testuser"
     user_data = {
         "profile_image_url": "http://example.com/image.jpg",
         "name": "Test User",
-        "screen_name": "testuser"
+        "screen_name": "testuser",
     }
 
     # Test cache hit
@@ -59,7 +66,7 @@ async def test_get_cached_user(mock_redis):
 
 
 @pytest.mark.asyncio
-async def test_get_cached_tweets(mock_redis):
+async def test_get_cached_tweets(mock_redis: AsyncMock) -> None:
     """Test get_cached_tweets function."""
     username = "testuser"
     tweets_data = [
@@ -68,7 +75,7 @@ async def test_get_cached_tweets(mock_redis):
             "type": "Post",
             "id": "123456",
             "full_text": "Test tweet",
-            "in_reply_to": []
+            "in_reply_to": [],
         }
     ]
 
@@ -80,7 +87,9 @@ async def test_get_cached_tweets(mock_redis):
 
 
 @pytest.mark.asyncio
-async def test_refresh_user_tweets_cache(mock_redis, mock_twikit_client):
+async def test_refresh_user_tweets_cache(
+    mock_redis: AsyncMock, mock_twikit_client: AsyncMock
+) -> None:
     """Test refresh_user_tweets_cache function."""
     username = "testuser"
 
@@ -108,4 +117,4 @@ async def test_refresh_user_tweets_cache(mock_redis, mock_twikit_client):
     await refresh_user_tweets_cache(username)
 
     # Verify Redis calls
-    assert mock_redis.setex.call_count == 2  # One for user data, one for tweets
+    assert mock_redis.setex.call_count == 2  # 1 for user data, 1 for tweets

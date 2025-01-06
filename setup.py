@@ -1,3 +1,5 @@
+# flake8: noqa
+
 from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:

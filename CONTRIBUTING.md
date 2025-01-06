@@ -105,4 +105,4 @@ isort .
 
 Feel free to open an issue with your question or reach out to the maintainers directly.
 
-Thank you for contributing to XRSS! 🎉 
+Thank you for contributing to XRSS! 🎉

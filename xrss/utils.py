@@ -1,11 +1,10 @@
 """Utility functions for XRSS."""
 
-import os
 import json
 import logging
+import os
 import sys
 from typing import Optional
-
 
 logger = logging.getLogger("xrss")
 
@@ -24,14 +23,13 @@ def setup_logging(level: Optional[str] = None) -> logging.Logger:
     if not logger.handlers:
         handler = logging.StreamHandler(sys.stdout)
         handler.setFormatter(
-            logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
+            logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         )
         logger.addHandler(handler)
 
     logger.setLevel(level or logging.INFO)
     return logger
+
 
 def clean_tweet(tweet: str) -> str:
     """
@@ -53,8 +51,9 @@ def clean_tweet(tweet: str) -> str:
     if tweet.startswith("RT @"):
         colon_index = tweet.find(":")
         if colon_index != -1:
-            return tweet[colon_index + 2:]
+            return tweet[colon_index + 2 :]
     return tweet
+
 
 def clean_cookies(cookie_file: str = "cookies.json") -> None:
     """
@@ -68,18 +67,17 @@ def clean_cookies(cookie_file: str = "cookies.json") -> None:
         return
 
     try:
-
-        with open(cookie_file, 'r') as f:
+        with open(cookie_file, "r") as f:
             cookies = json.load(f)
 
         # Keep only the most recent ct0 cookie if multiple exist
-        ct0_cookies = [c for c in cookies if isinstance(c, dict) and c.get('name') == 'ct0']
+        ct0_cookies = [c for c in cookies if isinstance(c, dict) and c.get("name") == "ct0"]
 
         if len(ct0_cookies) > 1:
             os.remove(cookie_file)
 
     except Exception as e:
         logger.error(f"Error cleaning cookies: {str(e)}")
-        # If there's any error, remove the cookie file to force re-authentication
+
         if os.path.exists(cookie_file):
             os.remove(cookie_file)
