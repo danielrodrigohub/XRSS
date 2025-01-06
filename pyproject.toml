@@ -40,6 +40,7 @@ dev = [
     "pylint>=3.0.2",
     "types-redis>=4.6.0.20231224",
     "types-requests>=2.31.0.20231231",
+    "types-feedgen>=0.9.0",
     "mkdocs>=1.5.3",
     "mkdocs-material>=9.5.2",
 ]
@@ -70,6 +71,7 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
