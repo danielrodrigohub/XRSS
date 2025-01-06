@@ -7,7 +7,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-<img src="https://raw.githubusercontent.com/thytu/XRSS/main/.github/assets/logo.png" alt="XRSS Logo" width="200"/>
+<img src="https://i.ibb.co/87RF1jG/xrss.png" alt="XRSS Logo" width="200"/>
 
 *Transform your Twitter experience into a delightful, distraction-free RSS feed!* 🚀
 
