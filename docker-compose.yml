@@ -5,8 +5,9 @@ services:
       - "8000"
     environment:
       - REDIS_URL=redis://redis:6379
-    env_file:
-      - .env
+      - TWITTER_USERNAME=${TWITTER_USERNAME}
+      - TWITTER_EMAIL=${TWITTER_EMAIL}
+      - TWITTER_PASSWORD=${TWITTER_PASSWORD}
     depends_on:
       - redis
     restart: unless-stopped
