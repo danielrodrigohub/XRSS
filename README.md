@@ -6,85 +6,101 @@ Transform tweets into an elegant RSS feed with custom filters, user tracking, an
 
 ## ✨ Features
 
-- 🔄 Convert Twitter timelines into RSS feeds
-- 👥 Track multiple Twitter users simultaneously
-- 🎯 Custom filtering options (posts, replies, retweets, quotes)
-- ⚡ Real-time updates
-- 🐳 Docker support for easy deployment
+- 🔄 Convert Twitter/X feeds to RSS format
+- 👥 Support for multiple Twitter accounts
+- 🎯 Filter by tweet types (posts, replies, retweets, quotes)
+- ⚡ Redis-based caching for fast responses
+- 🛡️ Rate limiting to prevent API throttling
+- 🐳 Docker and Docker Compose support
+- 🔄 Background refresh for always fresh data
+
+## 📋 Prerequisites
+
+- 🐳 Docker and Docker Compose
+- 🔑 Twitter/X account credentials
 
 ## 🚀 Quick Start
 
-### Using Docker
-
-```bash
-# Clone the repository
-git clone https://github.com/Thytu/XRSS.git
-cd XRSS
-
-# Create your .env file
-cp .env.example .env
-# Edit .env with your Twitter credentials
-
-# Build and run with Docker
-docker build -t xrss .
-docker run -p 8000:8000 xrss
-```
-
-### Manual Setup
-
 1. Clone the repository:
 ```bash
-git clone https://github.com/Thytu/xrss.git
+git clone https://github.com/yourusername/xrss.git
 cd xrss
 ```
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Set up your environment:
+2. Copy the example environment file and fill in your Twitter credentials:
 ```bash
 cp .env.example .env
-# Edit .env with your credentials:
-# TWITTER_USERNAME="your_username"
-# TWITTER_EMAIL="your_email"
-# TWITTER_PASSWORD="your_password"
 ```
 
-4. Run the application:
+3. Start the services using Docker Compose:
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000
+docker compose up -d
 ```
 
-## 🔧 Usage
+The service will be available at:
+- 📰 RSS Feed: `http://localhost:8000/feed.xml`
+- 📚 API Docs: `http://localhost:8000/docs`
 
-Access your RSS feed at:
-```
-http://localhost:8000/feed.xml
-```
+## 🔌 API Endpoints
 
-### Query Parameters
+### 📡 GET /feed.xml
+Get RSS feed for specified Twitter accounts.
 
-- `usernames`: List of Twitter usernames to follow (comma-separated)
+Query parameters:
+- `usernames`: List of Twitter usernames (default: ["ylecun", "AndrewYNg", "karpathy", "sama", "geoffreyhinton"])
 - `include_posts`: Include regular posts (default: true)
 - `include_replies`: Include replies (default: true)
 - `include_retweets`: Include retweets (default: true)
 - `include_quotes`: Include quote tweets (default: true)
 
-## 🤝 Contributing
+Example:
+```
+http://localhost:8000/feed.xml?usernames=ylecun&usernames=karpathy&include_replies=false
+```
 
-Contributions are welcome! Feel free to:
+### 🔍 POST /
+Raw API endpoint to fetch tweets.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Request body:
+```json
+{
+  "usernames": ["user1", "user2"],
+  "include_posts": true,
+  "include_replies": true,
+  "include_retweets": true,
+  "include_quotes": true
+}
+```
 
-## 📝 License
+## ⚙️ Configuration
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Required environment variables:
+- `TWITTER_USERNAME`: Your Twitter username
+- `TWITTER_EMAIL`: Your Twitter email
+- `TWITTER_PASSWORD`: Your Twitter password
+- `REDIS_URL`: Redis connection URL (default: redis://redis:6379)
+
+Optional environment variables:
+- `CACHE_TTL`: Cache duration in seconds (default: 1800 - 30 minutes)
+- `BACKGROUND_REFRESH_INTERVAL`: Background refresh interval in seconds (default: 1500 - 25 minutes)
+
+## 🚄 Performance Optimizations
+
+- 🗄️ Redis caching with configurable TTL (default: 30 minutes)
+- 🔄 Background refresh 5 minutes before cache expiration
+- 🚦 Rate limiting (2 concurrent requests, 1-second delay)
+- ⚡ Parallel processing of requests within rate limits
+
+## 💻 Development
+
+To run in development mode:
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the service
+python main.py
+```
 
 ## ⭐ Show Your Support
 
