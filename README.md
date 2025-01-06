@@ -1,7 +1,7 @@
 # 🌟 XRSS - Twitter to RSS, But Cooler
 
 [![License](https://img.shields.io/github/license/thytu/XRSS)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
