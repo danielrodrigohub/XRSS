@@ -134,6 +134,17 @@ async def refresh_user_tweets_cache(username: str) -> None:
     try:
         user = await rate_limited_request(twikit_client.get_user_by_screen_name(username))
 
+        # Store user profile data
+        await redis.setex(
+            f"user:{username}",
+            CACHE_TTL,
+            json.dumps({
+                "profile_image_url": user.profile_image_url,
+                "name": user.name,
+                "screen_name": user.screen_name
+            })
+        )
+
         # Fetch tweets with rate limiting
         tasks = [
             rate_limited_request(user.get_tweets(tweet_type="Tweets")),
@@ -189,6 +200,12 @@ async def get_cached_tweets(username: str) -> List[Dict[str, Any]]:
     await refresh_user_tweets_cache(username)
     cached_data = await redis.get(cache_key)
     return json.loads(cached_data) if cached_data else []
+
+async def get_cached_user(username: str) -> Dict[str, Any]:
+    """Get user data from cache."""
+    cache_key = f"user:{username}"
+    cached_data = await redis.get(cache_key)
+    return json.loads(cached_data) if cached_data else None
 
 @app.post("/")
 async def get_tweets(
@@ -262,6 +279,9 @@ async def get_feed(
     fg.link(href='https://definitely-not-tracking-tweets.com')
     fg.language('en')
 
+    # Add media namespace for profile pictures
+    fg.register_extension('media', 'http://search.yahoo.com/mrss/')
+
     tweets_data = await get_tweets(
         background_tasks=background_tasks,
         usernames=usernames,
@@ -272,6 +292,9 @@ async def get_feed(
     )
 
     for username, tweets in tweets_data.items():
+        # Get user data from cache
+        user_data = await get_cached_user(username)
+
         for tweet in tweets:
             fe = fg.add_entry()
             fe.title(f"{tweet['type']} by {username}")
@@ -280,6 +303,14 @@ async def get_feed(
             fe.pubDate(datetime.strptime(tweet['created_at'], "%a %b %d %H:%M:%S +0000 %Y").astimezone(ZoneInfo("UTC")))
             fe.author({'name': username})
             fe.guid(f"https://twitter.com/{username}/status/{tweet['id']}", permalink=True)
+
+            # Add profile picture as media content if available
+            if user_data and user_data.get('profile_image_url'):
+                fe.media.content({
+                    'url': user_data['profile_image_url'],
+                    'medium': 'image',
+                    'type': 'image/jpeg'  # Twitter usually serves profile pictures as JPEG
+                })
 
     return Response(content=fg.rss_str(), media_type="application/rss+xml")
 
