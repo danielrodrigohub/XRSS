@@ -73,7 +73,7 @@ You'll need:
      --name xrss \
      -p 8000:8000 \
      --env-file .env \
-     thytu/xrss:latest
+     vdematos/xrss:latest
    ```
 
    #### 🛠️ Manual Setup
