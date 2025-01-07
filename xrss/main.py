@@ -168,7 +168,7 @@ async def refresh_user_tweets_cache(username: str) -> None:
         await redis.setex(f"tweets:{username}", settings.cache_ttl, json.dumps(processed_tweets))
 
     except UserNotFound:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail=f"User {username} not found")
 
     except Exception as e:
         logger.error(f"Error refreshing cache for {username}: {str(e)}")
