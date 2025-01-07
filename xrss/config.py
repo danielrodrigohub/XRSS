@@ -34,3 +34,6 @@ class Settings(BaseSettings):
     log_format: str = os.getenv(
         "LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
+
+    # File paths
+    cookies_file: str = os.getenv("COOKIES_FILE", "cookies.json")

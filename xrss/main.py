@@ -231,30 +231,30 @@ async def get_tweets(
 
     try:
         # Clean up cookies before authentication
-        clean_cookies()
+        clean_cookies(settings.cookies_file)
 
         # Ensure authenticated with better cookie management
-        if os.path.exists("cookies.json"):
+        if os.path.exists(settings.cookies_file):
             try:
-                twikit_client.load_cookies("cookies.json")
+                twikit_client.load_cookies(settings.cookies_file)
                 await twikit_client.get_available_locations()
             except Exception as e:
                 logger.warning(f"Cookie validation failed: {str(e)}")
-                if os.path.exists("cookies.json"):
-                    os.remove("cookies.json")
+                if os.path.exists(settings.cookies_file):
+                    os.remove(settings.cookies_file)
                 await twikit_client.login(
                     auth_info_1=settings.twitter_username,
                     auth_info_2=settings.twitter_email,
                     password=settings.twitter_password,
                 )
-                twikit_client.save_cookies("cookies.json")
+                twikit_client.save_cookies(settings.cookies_file)
         else:
             await twikit_client.login(
                 auth_info_1=settings.twitter_username,
                 auth_info_2=settings.twitter_email,
                 password=settings.twitter_password,
             )
-            twikit_client.save_cookies("cookies.json")
+            twikit_client.save_cookies(settings.cookies_file)
 
         # Fetch tweets for all users with rate limiting
         tasks = [get_cached_tweets(username) for username in usernames]
@@ -263,6 +263,8 @@ async def get_tweets(
         # Schedule background refresh for each user
         for username in usernames:
             background_tasks.add_task(refresh_user_tweets_cache, username)
+
+        logger.info(f"Processed {len(all_tweets)} tweets for {len(usernames)} users")
 
         # Process and filter tweets
         result = {}

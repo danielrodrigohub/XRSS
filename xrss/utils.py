@@ -60,8 +60,13 @@ def clean_cookies(cookie_file: str = "cookies.json") -> None:
     Clean up cookie file to prevent authentication issues.
 
     Args:
-        cookie_file: Path to the cookie file
+        cookie_file: Path to the cookie file (defaults to cookies.json)
     """
+
+    # Create directory if it doesn't exist
+    cookie_dir = os.path.dirname(cookie_file)
+    if cookie_dir:  # Only create directory if path contains one
+        os.makedirs(cookie_dir, exist_ok=True)
 
     if not os.path.exists(cookie_file):
         logger.warning(f"Cookie file not found: {cookie_file}")

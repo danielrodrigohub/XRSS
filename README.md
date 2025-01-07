@@ -146,6 +146,21 @@ Raw API endpoint for advanced users.
 |:---------|:--------|:-------------|
 | `CACHE_TTL` | `1800` | How long to cache (seconds) |
 | `BACKGROUND_REFRESH_INTERVAL` | `1500` | How often to refresh (seconds) |
+| `COOKIES_FILE` | `cookies.json` | Path to store authentication cookies |
+
+### 🍪 Cookie Storage
+
+XRSS stores authentication cookies to maintain your session. By default, they are stored in `cookies.json` in the current directory, but you can customize this:
+
+```bash
+# Store in your config directory
+export COOKIES_FILE=~/.config/xrss/cookies.json
+
+# Or in a local data directory
+export COOKIES_FILE=./data/cookies/cookies.json
+```
+
+The directory structure will be created automatically if it doesn't exist.
 
 ## 🚄 Performance
 
