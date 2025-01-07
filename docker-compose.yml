@@ -1,6 +1,7 @@
 services:
+
   app:
-    build: .
+    image: thytu/xrss:latest
     expose:
       - "8000"
     environment:

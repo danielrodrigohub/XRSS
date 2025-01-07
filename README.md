@@ -6,6 +6,7 @@
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Docker Hub](https://img.shields.io/docker/pulls/thytu/xrss)](https://hub.docker.com/r/thytu/xrss)
 
 <img src="https://i.ibb.co/87RF1jG/xrss.png" alt="XRSS Logo" width="200"/>
 
@@ -51,24 +52,28 @@ You'll need:
 
 ### Quick Setup
 
-1. **Clone & Navigate**
+1. **Clone & Configure**
    ```bash
-   git clone https://github.com/thytu/xrss.git
-   cd xrss
-   ```
-
-2. **Configure**
-   ```bash
-   cp .env.example .env
+   # Get the example config
+   curl -O https://raw.githubusercontent.com/thytu/xrss/main/.env.example
+   mv .env.example .env
    # Edit .env with your Twitter credentials
    ```
 
-3. **Choose Your Path**
+2. **Choose Your Path**
 
    #### 🐳 Docker Way (Recommended)
    ```bash
+   # Using Docker Compose (recommended)
+   curl -O https://raw.githubusercontent.com/thytu/xrss/main/docker-compose.yml
    docker compose up -d
-   # That's it! You're ready to go! 🎉
+
+   # Or using Docker directly
+   docker run -d \
+     --name xrss \
+     -p 8000:8000 \
+     --env-file .env \
+     thytu/xrss:latest
    ```
 
    #### 🛠️ Manual Setup
