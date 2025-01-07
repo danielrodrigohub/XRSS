@@ -9,7 +9,6 @@ setup(
     name="xrss",
     version="0.1.0",
     author="thytu",
-    author_email="thytu@example.com",  # Replace with actual email
     description="Convert Twitter/X feeds to RSS with custom filters and caching",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -9,11 +9,12 @@ from zoneinfo import ZoneInfo
 
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI, Query, Response
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Response
 from feedgen.feed import FeedGenerator
 from redis import asyncio as aioredis
 from twikit import Client as TwikitClient
 from twikit import Tweet as TwikitTweet
+from twikit import UserNotFound
 
 try:
     from config import Settings
@@ -145,6 +146,9 @@ async def refresh_user_tweets_cache(username: str) -> None:
         # Store in Redis with TTL
         await redis.setex(f"tweets:{username}", settings.cache_ttl, json.dumps(processed_tweets))
 
+    except UserNotFound:
+        raise HTTPException(status_code=404, detail="User not found")
+
     except Exception as e:
         logger.error(f"Error refreshing cache for {username}: {str(e)}")
         raise
@@ -198,6 +202,10 @@ async def get_tweets(
     Returns:
         Dictionary mapping usernames to their tweets
     """
+
+    if len(usernames) == 0:
+        return {}
+
     try:
         # Clean up cookies before authentication
         clean_cookies()
@@ -332,7 +340,7 @@ def main() -> None:
         host=settings.host,
         port=settings.port,
         reload=settings.debug,
-        log_level="info" if settings.debug else "error",
+        log_level="debug" if settings.debug else "info",
     )
 
 

@@ -64,6 +64,7 @@ def clean_cookies(cookie_file: str = "cookies.json") -> None:
     """
 
     if not os.path.exists(cookie_file):
+        logger.warning(f"Cookie file not found: {cookie_file}")
         return
 
     try:
@@ -74,6 +75,7 @@ def clean_cookies(cookie_file: str = "cookies.json") -> None:
         ct0_cookies = [c for c in cookies if isinstance(c, dict) and c.get("name") == "ct0"]
 
         if len(ct0_cookies) > 1:
+            logger.warning("Found multiple ct0 cookies, removing all but the most recent")
             os.remove(cookie_file)
 
     except Exception as e:
