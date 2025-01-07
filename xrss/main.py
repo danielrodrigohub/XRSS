@@ -262,7 +262,12 @@ async def get_tweets(
 
         # Schedule background refresh for each user
         for username in usernames:
-            background_tasks.add_task(refresh_user_tweets_cache, username)
+            # Get the TTL of the tweets cache
+            ttl = await redis.ttl(f"tweets:{username}")
+            # Refresh if cache is missing (ttl = -2)
+            # or if remaining TTL is less than background_refresh_interval
+            if ttl == -2 or (ttl != -1 and ttl < settings.background_refresh_interval):
+                background_tasks.add_task(refresh_user_tweets_cache, username)
 
         logger.info(f"Processed {len(all_tweets)} tweets for {len(usernames)} users")
 
