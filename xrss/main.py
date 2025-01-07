@@ -164,6 +164,8 @@ async def refresh_user_tweets_cache(username: str) -> None:
             for tweet in all_tweets
         ]
 
+        logger.info(f"Processed {len(processed_tweets)} tweets for {username}")
+
         # Store in Redis with TTL
         await redis.setex(f"tweets:{username}", settings.cache_ttl, json.dumps(processed_tweets))
 
