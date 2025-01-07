@@ -123,12 +123,33 @@ async def refresh_user_tweets_cache(username: str) -> None:
             reverse=True,
         )
 
+        # By default retweet's full_text is actually not full lol
+        # First pass: mark tweet types and collect retweet IDs
+        retweet_tasks = []
+        for tweet in all_tweets:
+            setattr(tweet, "type", _get_tweet_type(tweet))
+            if tweet.type == "Retweet":
+                retweet_tasks.append(
+                    rate_limited_request(twikit_client.get_tweet_by_id(tweet.retweeted_tweet.id))
+                )
+
+        # Fetch all retweets in parallel
+        if retweet_tasks:
+            retweet_results = await asyncio.gather(*retweet_tasks)
+            retweet_map = {tweet.id: clean_tweet(tweet.full_text) for tweet in retweet_results}
+
+            # Update retweet full_text
+            for tweet in all_tweets:
+                if tweet.type == "Retweet":
+                    setattr(tweet, "full_text", retweet_map[tweet.retweeted_tweet.id])
+
         processed_tweets = [
             {
                 "created_at": tweet.created_at,
-                "type": _get_tweet_type(tweet),
+                "type": tweet.type,
                 "id": tweet.id,
                 "full_text": clean_tweet(tweet.full_text),
+                "raw_text": tweet.text,
                 "in_reply_to": [
                     {
                         "id": _reply.id,
@@ -338,7 +359,7 @@ def main() -> None:
     uvicorn.run(
         "main:app",
         host=settings.host,
-        port=settings.port,
+        port=8003,
         reload=settings.debug,
         log_level="debug" if settings.debug else "info",
     )
