@@ -148,8 +148,8 @@ async def refresh_user_tweets_cache(username: str) -> None:
                 "created_at": tweet.created_at,
                 "type": tweet.type,
                 "id": tweet.id,
+                "link": f"https://x.com/{username}/status/{tweet.id}",
                 "full_text": clean_tweet(tweet.full_text),
-                "raw_text": tweet.text,
                 "in_reply_to": [
                     {
                         "id": _reply.id,
