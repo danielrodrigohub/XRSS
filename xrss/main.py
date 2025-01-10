@@ -3,6 +3,7 @@
 import asyncio
 import json
 import os
+import random
 from datetime import datetime
 from typing import Any, Coroutine, Dict, List, Optional
 from zoneinfo import ZoneInfo
@@ -229,6 +230,10 @@ async def get_tweets(
     if len(usernames) == 0:
         return {}
 
+    # Shuffle usernames to prevent always hitting the same users first
+    shuffled_usernames = usernames.copy()
+    random.shuffle(shuffled_usernames)
+
     try:
         # Clean up cookies before authentication
         clean_cookies(settings.cookies_file)
@@ -257,11 +262,11 @@ async def get_tweets(
             twikit_client.save_cookies(settings.cookies_file)
 
         # Fetch tweets for all users with rate limiting
-        tasks = [get_cached_tweets(username) for username in usernames]
+        tasks = [get_cached_tweets(username) for username in shuffled_usernames]
         all_tweets = await asyncio.gather(*tasks)
 
         # Schedule background refresh for each user
-        for username in usernames:
+        for username in shuffled_usernames:
             # Get the TTL of the tweets cache
             ttl = await redis.ttl(f"tweets:{username}")
             # Refresh if cache is missing (ttl = -2)
@@ -269,11 +274,11 @@ async def get_tweets(
             if ttl == -2 or (ttl != -1 and ttl < settings.background_refresh_interval):
                 background_tasks.add_task(refresh_user_tweets_cache, username)
 
-        logger.info(f"Processed {len(all_tweets)} tweets for {len(usernames)} users")
+        logger.info(f"Processed {len(all_tweets)} tweets for {len(shuffled_usernames)} users")
 
         # Process and filter tweets
         result = {}
-        for username, user_tweets in zip(usernames, all_tweets):
+        for username, user_tweets in zip(shuffled_usernames, all_tweets):
             result[username] = [
                 tweet
                 for tweet in user_tweets
