@@ -138,7 +138,30 @@ Raw API endpoint for advanced users.
 | `TWITTER_USERNAME` | Your Twitter handle |
 | `TWITTER_EMAIL` | Your Twitter email |
 | `TWITTER_PASSWORD` | Your Twitter password |
+| `TWITTER_TOTP_SECRET` | TOTP secret key (required if 2FA is enabled) |
 | `REDIS_URL` | Redis connection string |
+
+### 🔐 Two-Factor Authentication (TOTP) Setup
+
+If your Twitter/X account has two-factor authentication enabled, you'll need to provide your TOTP secret key:
+
+1. **Find Your TOTP Secret**: 
+   - Go to Twitter Settings → Security and account access → Two-factor authentication
+   - Select "Authentication app" and view your backup codes
+   - Or extract the secret from your authenticator app's QR code
+
+2. **Add to Environment**:
+   ```bash
+   export TWITTER_TOTP_SECRET=your_totp_secret_here
+   ```
+
+3. **Docker Users**:
+   ```bash
+   # Add to your .env file
+   TWITTER_TOTP_SECRET=your_totp_secret_here
+   ```
+
+> **Note**: TOTP is optional - only needed if your account has 2FA enabled. The system will work normally without it for accounts that don't use two-factor authentication.
 
 ### 🎛️ Optional Tweaks
 

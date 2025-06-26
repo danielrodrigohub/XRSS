@@ -33,6 +33,7 @@ settings = Settings(
     twitter_username=os.getenv("TWITTER_USERNAME"),
     twitter_email=os.getenv("TWITTER_EMAIL"),
     twitter_password=os.getenv("TWITTER_PASSWORD"),
+    twitter_totp_secret=os.getenv("TWITTER_TOTP_SECRET"),
 )
 
 # Setup logging
@@ -140,9 +141,9 @@ async def refresh_user_tweets_cache(username: str) -> None:
             retweet_map = {tweet.id: clean_tweet(tweet.full_text) for tweet in retweet_results}
 
             # Update retweet full_text
-            for tweet in all_tweets:
-                if tweet.type == "Retweet":
-                    setattr(tweet, "full_text", retweet_map[tweet.retweeted_tweet.id])
+            # for tweet in all_tweets:
+            #     if tweet.type == "Retweet":
+                    # setattr(tweet, "full_text", retweet_map[tweet.retweeted_tweet.id])
 
         processed_tweets = [
             {
@@ -251,6 +252,7 @@ async def get_tweets(
                     auth_info_1=settings.twitter_username,
                     auth_info_2=settings.twitter_email,
                     password=settings.twitter_password,
+                    totp_secret=settings.twitter_totp_secret,
                 )
                 twikit_client.save_cookies(settings.cookies_file)
         else:
@@ -258,6 +260,7 @@ async def get_tweets(
                 auth_info_1=settings.twitter_username,
                 auth_info_2=settings.twitter_email,
                 password=settings.twitter_password,
+                totp_secret=settings.twitter_totp_secret,
             )
             twikit_client.save_cookies(settings.cookies_file)
 
