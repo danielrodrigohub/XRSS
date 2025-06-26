@@ -141,9 +141,9 @@ async def refresh_user_tweets_cache(username: str) -> None:
             retweet_map = {tweet.id: clean_tweet(tweet.full_text) for tweet in retweet_results}
 
             # Update retweet full_text
-            # for tweet in all_tweets:
-            #     if tweet.type == "Retweet":
-                    # setattr(tweet, "full_text", retweet_map[tweet.retweeted_tweet.id])
+            for tweet in all_tweets:
+                if tweet.type == "Retweet":
+                    setattr(tweet, "full_text", retweet_map[tweet.retweeted_tweet.id])
 
         processed_tweets = [
             {
