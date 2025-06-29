@@ -33,6 +33,7 @@ settings = Settings(
     twitter_username=os.getenv("TWITTER_USERNAME"),
     twitter_email=os.getenv("TWITTER_EMAIL"),
     twitter_password=os.getenv("TWITTER_PASSWORD"),
+    twitter_totp_secret=os.getenv("TWITTER_TOTP_SECRET"),
 )
 
 # Setup logging
@@ -251,6 +252,7 @@ async def get_tweets(
                     auth_info_1=settings.twitter_username,
                     auth_info_2=settings.twitter_email,
                     password=settings.twitter_password,
+                    totp_secret=settings.twitter_totp_secret,
                 )
                 twikit_client.save_cookies(settings.cookies_file)
         else:
@@ -258,6 +260,7 @@ async def get_tweets(
                 auth_info_1=settings.twitter_username,
                 auth_info_2=settings.twitter_email,
                 password=settings.twitter_password,
+                totp_secret=settings.twitter_totp_secret,
             )
             twikit_client.save_cookies(settings.cookies_file)
 

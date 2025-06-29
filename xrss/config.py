@@ -2,6 +2,8 @@
 
 import os
 
+from typing import Optional
+
 from pydantic_settings import BaseSettings
 
 
@@ -12,6 +14,7 @@ class Settings(BaseSettings):
     twitter_username: str
     twitter_email: str
     twitter_password: str
+    twitter_totp_secret: Optional[str] = None
 
     # Redis configuration
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379")
