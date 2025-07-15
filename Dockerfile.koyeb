@@ -1,16 +1,11 @@
 FROM python:3.11-slim
 
-# Crear directorio
 WORKDIR /app
 
-# Copiar todo
 COPY . .
 
-# Instalar dependencias
 RUN pip install ".[dev]"
 
-# Exponer puerto
 EXPOSE 8000
 
-# Comando de inicio
-CMD ["python", "main.py"]
+CMD ["python", "-m", "xrss"]
